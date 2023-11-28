@@ -1,5 +1,5 @@
 from .base_handlers import BaseHandlers
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackContext, ConversationHandler
 
 class BotCommandHandlers(BaseHandlers):
@@ -62,3 +62,22 @@ class BotCommandHandlers(BaseHandlers):
         await self.send_response_message(message, update, context)
 
         return ConversationHandler.END
+
+    async def remove_allowed_user(self, update: Update, context: CallbackContext):
+        users_arr = await self._user_service.get_allowed_users_list()
+        keyboard = [[InlineKeyboardButton(user['full_name'], callback_data=str(user['id']))] for user in users_arr]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await update.message.reply_text('Select the account you want to remove from \'Allowed Users\':', reply_markup=reply_markup)
+
+    async def handle_remove_account_button(self, update: Update, context: CallbackContext):
+        query = update.callback_query
+        user_id = query.from_user.id
+        user_id_to_remove = int(query.data)
+
+        if self._settings.remove_allowed_user(user_id, user_id_to_remove):
+            message = 'User was removed successfully!'
+        else:
+            message = 'There was an error. Please try again!'
+
+        await self.send_response_message(message, update, context)

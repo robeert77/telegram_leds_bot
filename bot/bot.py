@@ -1,7 +1,7 @@
 from bot.bot_settings import BotSettings
 from bot.handlers.command_handlers import BotCommandHandlers
 from bot.handlers.message_handler import BotMessageHandlers
-from telegram.ext import Application
+from telegram.ext import Application, CallbackQueryHandler
 from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHandler
 
 class Bot(object):
@@ -37,7 +37,7 @@ class Bot(object):
         caps_handler = CommandHandler('caps', command_handlers.caps)
         self.__add_handler(caps_handler)
 
-        # TESTE handler
+        # ADD ALLOWED USERS handler
         add_allowed_user_handler = ConversationHandler(
             entry_points=[CommandHandler('add_allowed_user', command_handlers.add_allowed_user)],
             states={
@@ -45,8 +45,12 @@ class Bot(object):
             },
             fallbacks=[],
         )
-
         self.__add_handler(add_allowed_user_handler)
+
+        # REMOVE ALLOWED USERS handler
+        remove_users = CommandHandler('remove_allowed_user', command_handlers.remove_allowed_user)
+        self.__application.add_handler(remove_users)
+        self.__application.add_handler(CallbackQueryHandler(command_handlers.handle_remove_account_button))
 
     def __create_message_handlers(self):
         message_handler = BotMessageHandlers(bot_instance=self.__bot)

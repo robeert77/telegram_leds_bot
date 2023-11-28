@@ -6,25 +6,41 @@ class UserService(object):
     __settings = None
 
     def __init__(self, bot=None):
-        if self.__bot is None and bot is not None:
-            self.__bot = bot
+        if UserService.__bot is None and bot is not None:
+            UserService.__bot = bot
 
-        if self.__settings is None:
-            self.__settings = BotSettings()
+        if UserService.__settings is None:
+            UserService.__settings = BotSettings()
 
     async def __get_user_details(self, user_id):
-        if not user_id or self.__bot is None:
+        if not user_id or UserService.__bot is None:
             return None
 
-        user = await self.__bot.get_chat(user_id)
+        user = await UserService.__bot.get_chat(user_id)
         return user
+
+    async def __get_user_dictionary(self, user_data):
+        if not (user_object := await self.get_user_object(user_data)):
+            return False
+
+        full_name = user_object.first_name
+        if user_object.last_name:
+            full_name += ' ' + str(user_object.last_name)
+
+        return {
+            'id':           user_object.id,
+            'first_name':   user_object.first_name.title(),
+            'last_name':    str(user_object.last_name).title(),
+            'full_name':    full_name.title(),
+            'username':     user_object.username,
+        }
 
     async def is_user_allowed(self, user_data):
         if not (user_object := await self.get_user_object(user_data)):
             return False
 
         user_id = user_object['id']
-        allowed_users = self.__settings.get_allowed_users()
+        allowed_users = UserService.__settings.get_allowed_users()
 
         return user_id in allowed_users
 
@@ -38,3 +54,12 @@ class UserService(object):
             return await self.__get_user_details(data)
         else:
             return None
+
+    async def get_allowed_users_list(self):
+        allowed_users_id = UserService.__settings.get_allowed_users()
+        allowed_users_arr = []
+        for user_id in allowed_users_id:
+            user_object = await self.__get_user_dictionary(user_id)
+            allowed_users_arr.append(user_object)
+
+        return allowed_users_arr

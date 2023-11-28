@@ -49,19 +49,19 @@ class Bot(object):
         self.__add_handler(add_allowed_user_handler)
 
         # REMOVE ALLOWED USERS handler
-        remove_users = CommandHandler('remove_allowed_user', command_handlers.remove_allowed_user)
-        self.__application.add_handler(remove_users)
+        remove_users_handler = CommandHandler('remove_allowed_user', command_handlers.remove_allowed_user)
+        self.__application.add_handler(remove_users_handler)
         self.__application.add_handler(CallbackQueryHandler(command_handlers.handle_remove_account_button))
 
         # SET LEDS BRIGHTNESS handler
-        add_allowed_user_handler = ConversationHandler(
+        set_brightness_handler = ConversationHandler(
             entry_points=[CommandHandler('set_brightness', command_handlers.set_brightness)],
             states={
                 0: [MessageHandler(filters.TEXT, message_handler.set_brightness)]
             },
             fallbacks=[],
         )
-        self.__add_handler(add_allowed_user_handler)
+        self.__add_handler(set_brightness_handler)
 
     def __create_message_handlers(self):
         message_handler = BotMessageHandlers(bot_instance=self.__bot)

@@ -1,12 +1,14 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from led_strip.strip_animations import StripAnimations
 from ..bot_settings import BotSettings
 from ..user_service import UserService
 
 class BaseHandlers(object):
     _settings = None
     _user_service = None
+    _strip_animations = None
 
     def __init__(self, bot_instance=None):
         if BaseHandlers._settings is None:
@@ -14,6 +16,9 @@ class BaseHandlers(object):
 
         if BaseHandlers._user_service is None:
             BaseHandlers._user_service = UserService(bot=bot_instance)
+
+        if BaseHandlers._strip_animations is None:
+            BaseHandlers._strip_animations = StripAnimations()
 
     async def can_respond(self, update: Update):
         if BaseHandlers._user_service is None:

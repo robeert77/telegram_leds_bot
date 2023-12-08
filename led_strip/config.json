@@ -1,0 +1,8 @@
+{
+  "leds_settings":
+  {
+    "count": 286,
+    "brightness": 50,
+    "first_led": 13
+  }
+}

@@ -60,8 +60,7 @@ class BotMessageHandlers(BaseHandlers):
             await self.send_response_message(message, update, context)
             return 0
 
-        # TODO
-        # Send brightness_value to the led module
+        await self._strip_animations.change_brightness(brightness_value)
 
         message = f'Brightness was set to {brightness_value}'
         await self.send_response_message(message, update, context)

@@ -53,6 +53,14 @@ class Bot(object):
         self.__application.add_handler(remove_users_handler)
         self.__application.add_handler(CallbackQueryHandler(command_handlers.handle_remove_account_button))
 
+        # TURN LEDS ON handler
+        turn_leds_on_handler = CommandHandler('turn_leds_on', command_handlers.turn_leds_on)
+        self.__add_handler(turn_leds_on_handler)
+
+        # TURN LEDS OFF handler
+        turn_leds_off_handler = CommandHandler('turn_leds_off', command_handlers.turn_leds_off)
+        self.__add_handler(turn_leds_off_handler)
+
         # SET LEDS BRIGHTNESS handler
         set_brightness_handler = ConversationHandler(
             entry_points=[CommandHandler('set_brightness', command_handlers.set_brightness)],

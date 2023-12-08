@@ -62,3 +62,21 @@ class BotCommandHandlers(BaseHandlers):
         await self.send_response_message(message, update, context)
 
         return 0
+
+    async def turn_leds_on(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if not await self.can_respond(update):
+            return
+
+        self._strip_animations.turn_leds_on()
+
+        message = 'The LEDs were turned ON.'
+        await self.send_response_message(message, update, context)
+
+    async def turn_leds_off(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if not await self.can_respond(update):
+            return
+
+        await self._strip_animations.fade_out()
+
+        message = 'The LEDs were turned OFF.'
+        await self.send_response_message(message, update, context)

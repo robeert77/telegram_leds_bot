@@ -1,0 +1,10 @@
+{
+  "leds_settings":
+  {
+    "count": 280,
+    "pin": 13,
+    "brightness": 50,
+    "channel": 1,
+    "first_led": 7
+  }
+}

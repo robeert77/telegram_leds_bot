@@ -39,7 +39,7 @@ class BotMessageHandlers(BaseHandlers):
 
             return
 
-        if self._settings.add_allowed_user(user):
+        if self._bot_settings.add_allowed_user(user):
             message = 'User has been added with success!'
         else:
             message = 'User already has been allowed to chat!'
@@ -53,15 +53,14 @@ class BotMessageHandlers(BaseHandlers):
             return
 
         brightness_value = update.message.text
-        if brightness_value.isdigit() and 0 <= int(brightness_value) <= 255:
+        if brightness_value.isdigit() and 0 < int(brightness_value) <= 255:
             brightness_value = int(brightness_value)
         else:
             message = 'Please enter a number between 0 and 255!'
             await self.send_response_message(message, update, context)
             return 0
 
-        # TODO
-        # Send brightness_value to the led module
+        await self._strip_animations.change_brightness(brightness_value, 8)
 
         message = f'Brightness was set to {brightness_value}'
         await self.send_response_message(message, update, context)

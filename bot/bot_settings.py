@@ -1,8 +1,17 @@
 from settings.settings import Settings
 
 class BotSettings(Settings):
-    def __init__(self):
-        super().__init__('bot/config.json')
+    __instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = super(BotSettings, cls).__new__(cls, *args, **kwargs)
+        return cls.__instance
+
+    def __init__(self, json_file='bot/config.json'):
+        if not hasattr(self, 'initialized'):
+            super().__init__(json_file)
+            self.initialized = True
 
     def add_allowed_user(self, user):
         allowed_users = self.get_allowed_users()
@@ -10,8 +19,7 @@ class BotSettings(Settings):
         if user['id'] in allowed_users:
             return False
 
-        allowed_users.append(user['id'])
-        self._set_json_data_by_key('allowed_users_id', allowed_users)
+        self.append_to_array('allowed_users_id', user['id'])
         return True
 
     def get_allowed_users(self):
@@ -24,6 +32,5 @@ class BotSettings(Settings):
         if user_id_to_remove not in allowed_users:
             return False
 
-        allowed_users.remove(user_id_to_remove)
-        self._set_json_data_by_key('allowed_users_id', allowed_users)
+        self.remove_from_array('allowed_users_id', user_id_to_remove)
         return True

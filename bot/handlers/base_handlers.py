@@ -5,12 +5,12 @@ from ..bot_settings import BotSettings
 from ..user_service import UserService
 
 class BaseHandlers(object):
-    _settings = None
+    _bot_settings = None
     _user_service = None
 
     def __init__(self, bot_instance=None):
-        if BaseHandlers._settings is None:
-            BaseHandlers._settings = BotSettings()
+        if BaseHandlers._bot_settings is None:
+            BaseHandlers._bot_settings = BotSettings()
 
         if BaseHandlers._user_service is None:
             BaseHandlers._user_service = UserService(bot=bot_instance)

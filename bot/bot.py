@@ -67,15 +67,6 @@ class Bot(object):
         self.__add_handler(set_brightness_handler)
         self.__add_handler(CallbackQueryHandler(command_handlers.slider_callback, pattern=r"^(increase|decrease|current)$"))
 
-        # set_brightness_handler = ConversationHandler(
-        #     entry_points=[CommandHandler('set_brightness', command_handlers.set_brightness)],
-        #     states={
-        #         0: [MessageHandler(filters.TEXT, message_handler.set_brightness)]
-        #     },
-        #     fallbacks=[],
-        # )
-        # self.__add_handler(set_brightness_handler)
-
         # SET LEDS BRIGHTNESS handler
         set_brightness_handler = ConversationHandler(
             entry_points=[CommandHandler('set_brightness', command_handlers.set_brightness)],

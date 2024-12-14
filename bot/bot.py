@@ -8,6 +8,7 @@ class Bot(object):
     def __init__(self):
         token = self.__get_bot_token()
         self.__application = Application.builder().token(token).build()
+        # self.__application.run_polling(timeout=60)
         self.__bot = self.__application.bot
 
     def run(self):
@@ -15,8 +16,8 @@ class Bot(object):
         self.__application.run_polling()
 
     def __get_bot_token(self):
-        settings = BotSettings()
-        return settings.get_bot_token()
+        bot_settings = BotSettings()
+        return bot_settings.get_bot_token()
 
     def __add_handler(self, handler):
         self.__application.add_handler(handler)
@@ -27,8 +28,8 @@ class Bot(object):
         self.__create_error_handlers()
 
     def __create_command_handlers(self):
-        command_handlers = BotCommandHandlers(bot_instance=self.__bot)
-        message_handler = BotMessageHandlers(bot_instance=self.__bot)
+        command_handlers = BotCommandHandlers(self.__bot)
+        message_handler = BotMessageHandlers(self.__bot)
 
         # START handler
         start_handler = CommandHandler('start', command_handlers.start)
@@ -50,8 +51,30 @@ class Bot(object):
 
         # REMOVE ALLOWED USERS handler
         remove_users_handler = CommandHandler('remove_allowed_user', command_handlers.remove_allowed_user)
-        self.__application.add_handler(remove_users_handler)
-        self.__application.add_handler(CallbackQueryHandler(command_handlers.handle_remove_account_button))
+        self.__add_handler(remove_users_handler)
+        self.__add_handler(CallbackQueryHandler(command_handlers.handle_remove_account_button, pattern=r"remove_user:\d+"))
+
+        # TURN LEDS ON handler
+        rainbow_animation_handler = CommandHandler('rainbow_animation', command_handlers.start_rainbow_animation)
+        self.__add_handler(rainbow_animation_handler)
+
+        # TURN LEDS OFF handler
+        turn_leds_off_handler = CommandHandler('turn_leds_off', command_handlers.turn_leds_off)
+        self.__add_handler(turn_leds_off_handler)
+
+        # SET LEDS BRIGHTNESS handler
+        set_brightness_handler = CommandHandler('set_brightness', command_handlers.set_brightness)
+        self.__add_handler(set_brightness_handler)
+        self.__add_handler(CallbackQueryHandler(command_handlers.slider_callback, pattern=r"^(increase|decrease|current)$"))
+
+        # set_brightness_handler = ConversationHandler(
+        #     entry_points=[CommandHandler('set_brightness', command_handlers.set_brightness)],
+        #     states={
+        #         0: [MessageHandler(filters.TEXT, message_handler.set_brightness)]
+        #     },
+        #     fallbacks=[],
+        # )
+        # self.__add_handler(set_brightness_handler)
 
         # SET LEDS BRIGHTNESS handler
         set_brightness_handler = ConversationHandler(

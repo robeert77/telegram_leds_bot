@@ -129,3 +129,12 @@ class BotCommandHandlers(BaseHandlers):
 
         message = 'The LEDs were turned OFF.'
         await self.send_response_message(message, update, context)
+
+    async def set_brightness(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if not await self.can_respond(update):
+            return
+
+        message = 'Led\'s brightness is represented by a number:\n0 - no brightness\n255 - maximum brightness\n\nPlease choose a number in this interval!'
+        await self.send_response_message(message, update, context)
+
+        return 0

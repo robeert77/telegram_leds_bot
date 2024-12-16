@@ -48,22 +48,3 @@ class BotMessageHandlers(BaseHandlers):
 
         return ConversationHandler.END
 
-    async def set_brightness(self, update: Update, context: CallbackContext):
-        if not await self.can_respond(update):
-            return
-
-        brightness_value = update.message.text
-        if brightness_value.isdigit() and 0 < int(brightness_value) <= 255:
-            brightness_value = int(brightness_value)
-        else:
-            message = 'Please enter a number between 0 and 255!'
-            await self.send_response_message(message, update, context)
-            return 0
-
-        await self._strip_animations.change_brightness(brightness_value, 8)
-
-        message = f'Brightness was set to {brightness_value}'
-        await self.send_response_message(message, update, context)
-
-        return ConversationHandler.END
-

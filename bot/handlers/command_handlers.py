@@ -80,10 +80,6 @@ class BotCommandHandlers(BaseHandlers):
 
         slider = InlineKeyboardMarkup(buttons)
         await update.message.reply_text(f"Current brightness: {current_brightness}", reply_markup=slider)
-        # message = f'Current brightness: {current_brightness}\n\nPlease choose a number between 0 and 255!'
-        # await self.send_response_message(message, update, context)
-
-        # return 0
 
     async def slider_callback(self, update: Update, context: CallbackContext):
         if not await self.can_respond(update):
@@ -94,7 +90,7 @@ class BotCommandHandlers(BaseHandlers):
 
         current_brightness = self._strip_animations.get_brightness()
         query = update.callback_query
-        adjustment = 25 if current_brightness > 100 else (10 if current_brightness > 30 else 5)
+        adjustment = 20 if current_brightness >= 100 else (10 if current_brightness >= 20 else 5)
 
         if query.data == "increase" and current_brightness + adjustment <= 255:
             current_brightness += adjustment
@@ -129,12 +125,4 @@ class BotCommandHandlers(BaseHandlers):
 
         message = 'The LEDs were turned OFF.'
         await self.send_response_message(message, update, context)
-
-    async def set_brightness(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not await self.can_respond(update):
-            return
-
-        message = 'Led\'s brightness is represented by a number:\n0 - no brightness\n255 - maximum brightness\n\nPlease choose a number in this interval!'
-        await self.send_response_message(message, update, context)
-
-        return 0
+        
